@@ -6,11 +6,12 @@ from rag.config import CHROMA_DB_PATH
 
 def create_vector_store(documents):
 
-    db = Chroma.from_documents(
-        documents=documents,
-        embedding=embeddings,
+    db = Chroma(
         persist_directory=CHROMA_DB_PATH,
+        embedding_function=embeddings,
     )
+
+    db.add_documents(documents)
 
     return db
 

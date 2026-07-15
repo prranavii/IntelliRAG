@@ -1,4 +1,3 @@
-import shutil
 from pathlib import Path
 from git import Repo
 
@@ -14,9 +13,15 @@ class GitHubLoader:
 
         destination = self.repo_dir / repo_name
 
+        # If already cloned, reuse it
         if destination.exists():
-            shutil.rmtree(destination)
+            print(f"✅ Repository '{repo_name}' already exists.")
+            return destination
+
+        print(f"📥 Cloning {repo_name}...")
 
         Repo.clone_from(github_url, destination)
+
+        print("✅ Clone completed!")
 
         return destination

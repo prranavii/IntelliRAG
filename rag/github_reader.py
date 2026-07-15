@@ -1,7 +1,6 @@
 from pathlib import Path
 from langchain_core.documents import Document
 
-
 IGNORE_DIRS = {
     ".git",
     "venv",
@@ -21,12 +20,7 @@ SUPPORTED_EXTENSIONS = {
     ".js",
     ".ts",
     ".md",
-    ".txt",
-    ".json",
-    ".yaml",
-    ".yml",
-    ".html",
-    ".css"
+    ".txt"
 }
 
 
@@ -55,7 +49,10 @@ def load_repository(repo_path):
                 Document(
                     page_content=text,
                     metadata={
-                        "source": str(file)
+                        "source": str(file),
+                        "filename": file.name,
+                        "extension": file.suffix,
+                        "folder": str(file.parent)
                     }
                 )
             )
