@@ -3,11 +3,11 @@ from rag.vectorstore import load_vector_store
 
 def get_retriever():
 
-    db = load_vector_store()
+    vectorstore = load_vector_store()
 
-    retriever = db.as_retriever(
+    return vectorstore.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 4}
+        search_kwargs={
+            "k": 4
+        }
     )
-
-    return retriever

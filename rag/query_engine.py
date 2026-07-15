@@ -1,19 +1,32 @@
-from langchain_core.prompts import ChatPromptTemplate
+from rag.retriever import get_retriever
+from rag.prompt import PROMPT
+from rag.llm import llm
 
-RAG_PROMPT = ChatPromptTemplate.from_template(
-"""
-You are IntelliRAG, an expert AI assistant.
 
-Answer ONLY using the provided context.
+class QueryEngine:
 
-If the answer cannot be found in the context, reply:
+    def __init__(self):
+        self.retriever = get_retriever()
 
-"I couldn't find that information in the indexed documents."
+    def ask(self, question: str):
 
-Context:
-{context}
+        docs = self.retriever.invoke(question)
 
-Question:
-{question}
-"""
-)
+        context = "\n\n".join(
+            doc.page_content
+            for doc in docs
+        )
+
+        prompt = PROMPT.invoke(
+            {
+                "context": context,
+                "question": question
+            }
+        )
+
+        response = llm.invoke(prompt)
+
+        return {
+            "answer": response.content,
+            "documents": docs
+        }
