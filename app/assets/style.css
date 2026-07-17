@@ -1,0 +1,41 @@
+/* Background */
+
+.stApp{
+    background:#0E1117;
+}
+
+/* Sidebar */
+
+section[data-testid="stSidebar"]{
+    background:#1A1C24;
+}
+
+/* Buttons */
+
+.stButton>button{
+    width:100%;
+    border-radius:12px;
+    height:50px;
+    font-weight:bold;
+}
+
+/* Chat */
+
+.stChatMessage{
+    border-radius:15px;
+    padding:12px;
+}
+
+/* Upload Box */
+
+[data-testid="stFileUploader"]{
+    border:2px dashed #3b82f6;
+    border-radius:15px;
+    padding:10px;
+}
+
+/* Headers */
+
+h1,h2,h3{
+    color:white;
+}

@@ -13,11 +13,12 @@ class IngestionManager:
 
         docs = DocumentLoader.load_pdf(folder)
 
-        chunks = split_code(docs)
+        chunks = split_documents(docs)
 
         create_vector_store(chunks)
 
         print(f"Indexed {len(chunks)} PDF chunks.")
+        return len(chunks)
 
     def ingest_github(self, github_url):
 
@@ -32,3 +33,4 @@ class IngestionManager:
         create_vector_store(chunks)
 
         print(f"Indexed {len(chunks)} GitHub chunks.")
+        return len(chunks)

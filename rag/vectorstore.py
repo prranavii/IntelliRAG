@@ -11,7 +11,18 @@ def create_vector_store(documents):
         embedding_function=embeddings,
     )
 
-    db.add_documents(documents)
+    # Delete old collection
+    try:
+        db.delete_collection()
+    except Exception:
+        pass
+
+    # Create fresh collection
+    db = Chroma.from_documents(
+        documents=documents,
+        embedding=embeddings,
+        persist_directory=CHROMA_DB_PATH,
+    )
 
     return db
 
