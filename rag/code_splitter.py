@@ -1,8 +1,16 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 code_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1200,
-    chunk_overlap=150,
+    chunk_size=900,
+    chunk_overlap=200,
+    separators=[
+        "\nclass ",
+        "\ndef ",
+        "\n\n",
+        "\n",
+        " ",
+        ""
+    ]
 )
 
 

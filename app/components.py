@@ -30,16 +30,16 @@ def github_component():
 
     return github_url, build
 
-
 def website_component():
 
     st.header("🌐 Website")
 
     website_url = st.text_input(
-        "Website URL",
-        placeholder="https://example.com"
+        "Enter Website URL"
     )
 
-    build = st.button("🚀 Build Knowledge Base", key="website_build")
+    build = st.button(
+        "🚀 Build Knowledge Base"
+    )
 
     return website_url, build

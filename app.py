@@ -201,10 +201,35 @@ elif source == "GitHub Repository":
 # ============================================================
 # WEBSITE
 # ============================================================
-
 elif source == "Website":
 
-    website_component()
+    website_url, build = website_component()
+
+    if build:
+
+        if not website_url.strip():
+
+            st.warning("Please enter a Website URL.")
+
+        else:
+
+            with st.spinner("Reading Website..."):
+
+                manager = IngestionManager()
+
+                chunk_count = manager.ingest_website(
+                    website_url
+                )
+
+            get_query_engine.clear()
+
+            st.session_state.messages = []
+            st.session_state.kb_ready = True
+            st.session_state.chunk_count = chunk_count
+            st.session_state.document_count = 1
+            st.session_state.last_source = "Website"
+
+            st.success("Website Indexed Successfully!")
 
 
 # ============================================================
