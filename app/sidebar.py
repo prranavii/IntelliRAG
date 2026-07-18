@@ -15,7 +15,6 @@ def render_sidebar():
 
             "GitHub Repository",
 
-            "Website"
 
         ]
 

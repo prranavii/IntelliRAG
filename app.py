@@ -1,5 +1,7 @@
 import sys
+import time
 from pathlib import Path
+
 
 # ------------------------------------------------------------
 # Add project root to Python Path
@@ -13,8 +15,7 @@ from app.styles import load_css
 from app.sidebar import render_sidebar
 from app.components import (
     pdf_component,
-    github_component,
-    website_component,
+    github_component
 )
 from app.file_manager import (
     save_uploaded_files,
@@ -199,40 +200,6 @@ elif source == "GitHub Repository":
 
 
 # ============================================================
-# WEBSITE
-# ============================================================
-elif source == "Website":
-
-    website_url, build = website_component()
-
-    if build:
-
-        if not website_url.strip():
-
-            st.warning("Please enter a Website URL.")
-
-        else:
-
-            with st.spinner("Reading Website..."):
-
-                manager = IngestionManager()
-
-                chunk_count = manager.ingest_website(
-                    website_url
-                )
-
-            get_query_engine.clear()
-
-            st.session_state.messages = []
-            st.session_state.kb_ready = True
-            st.session_state.chunk_count = chunk_count
-            st.session_state.document_count = 1
-            st.session_state.last_source = "Website"
-
-            st.success("Website Indexed Successfully!")
-
-
-# ============================================================
 # KNOWLEDGE BASE STATUS
 # ============================================================
 
@@ -262,7 +229,15 @@ if st.session_state.kb_ready:
 
     st.divider()
 
-    st.header("💬 Chat with IntelliRAG")
+    col1, col2 = st.columns([8, 1])
+
+    with col1:
+        st.header("💬 Chat with IntelliRAG")
+
+    with col2:
+        if st.button("🗑", help="Clear Chat"):
+            st.session_state.messages = []
+            st.rerun()
 
     # Previous Messages
     for message in st.session_state.messages:
@@ -293,10 +268,14 @@ if st.session_state.kb_ready:
 
             engine = get_query_engine()
 
+            start = time.time()
+
             response = engine.ask(question)
 
-        answer = response["answer"]
+            end = time.time()
 
+        answer = response["answer"]
+       
         st.session_state.messages.append(
             {
                 "role": "assistant",
@@ -307,6 +286,9 @@ if st.session_state.kb_ready:
         with st.chat_message("assistant"):
 
             st.markdown(answer)
+
+            st.caption(f"⏱ Response generated in {end-start:.2f} sec")
+
 
             with st.expander("📚 Sources Used"):
 
@@ -321,10 +303,7 @@ if st.session_state.kb_ready:
 
                     st.divider()
 
-else:
+    else:
 
-    st.divider()
-
-    st.info(
-        "📚 Upload a PDF or GitHub Repository and click **Build Knowledge Base** to start chatting."
-    )
+        st.divider()
+       

@@ -1,17 +1,21 @@
 from pathlib import Path
+import shutil
 
 UPLOAD_DIR = Path("data/uploads")
 
 
 def save_uploaded_files(uploaded_files):
+    """
+    Save uploaded PDFs.
+    Clear old uploads before saving new ones.
+    """
+
+    if UPLOAD_DIR.exists():
+        shutil.rmtree(UPLOAD_DIR)
 
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Remove old PDFs
-    for pdf in UPLOAD_DIR.glob("*.pdf"):
-        pdf.unlink()
-
-    saved_files = []
+    saved_paths = []
 
     for uploaded_file in uploaded_files:
 
@@ -20,14 +24,6 @@ def save_uploaded_files(uploaded_files):
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
 
-        saved_files.append(uploaded_file.name)
+        saved_paths.append(file_path)
 
-    return saved_files
-
-
-def get_uploaded_files():
-
-    if not UPLOAD_DIR.exists():
-        return []
-
-    return [pdf.name for pdf in UPLOAD_DIR.glob("*.pdf")]
+    return saved_paths

@@ -5,13 +5,18 @@ def chat_component():
 
     st.divider()
 
-    st.header("💬 Chat with IntelliRAG")
+    col1, col2 = st.columns([6, 1])
 
-    question = st.text_input(
-        "Ask anything about your uploaded documents",
-        placeholder="Example: Summarize this resume"
+    with col1:
+        st.header("💬 Chat with IntelliRAG")
+
+    with col2:
+        if st.button("🗑 Clear Chat"):
+            st.session_state.messages = []
+            st.rerun()
+
+    question = st.chat_input(
+        "Ask anything about your knowledge base..."
     )
 
-    ask = st.button("🚀 Ask")
-
-    return question, ask
+    return question
