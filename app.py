@@ -62,6 +62,9 @@ if "kb_ready" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+if "current_source" not in st.session_state:
+    st.session_state.current_source = "PDF"
+    
 if "chunk_count" not in st.session_state:
     st.session_state.chunk_count = 0
 
@@ -76,6 +79,25 @@ if "last_source" not in st.session_state:
 # Sidebar
 # ------------------------------------------------------------
 source = render_sidebar()
+# Track current source
+if "current_source" not in st.session_state:
+    st.session_state.current_source = source
+
+# If source changes, reset everything
+if st.session_state.current_source != source:
+
+    st.session_state.current_source = source
+
+    st.session_state.messages = []
+
+    st.session_state.kb_ready = False
+    st.session_state.document_count = 0
+    st.session_state.chunk_count = 0
+    st.session_state.last_source = ""
+
+    get_query_engine.clear()
+
+    st.rerun()
 # ------------------------------------------------------------
 # Uploaded Files in Sidebar
 # ------------------------------------------------------------

@@ -48,10 +48,10 @@ class IngestionManager:
 
         return len(chunks)
 
-docs = DocumentLoader.load_pdf(folder)
+# docs = DocumentLoader.load_pdf(folder)
 
-print("=" * 50)
-print("DOCUMENTS LOADED:", len(docs))
+# print("=" * 50)
+# print("DOCUMENTS LOADED:", len(docs))
 
-for doc in docs:
-    print(doc.metadata)
+# for doc in docs:
+#     print(doc.metadata)

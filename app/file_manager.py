@@ -18,7 +18,6 @@ def save_uploaded_files(uploaded_files):
     saved_paths = []
 
     for uploaded_file in uploaded_files:
-
         file_path = UPLOAD_DIR / uploaded_file.name
 
         with open(file_path, "wb") as f:
@@ -27,3 +26,20 @@ def save_uploaded_files(uploaded_files):
         saved_paths.append(file_path)
 
     return saved_paths
+
+
+def get_uploaded_files():
+    """
+    Return a list of uploaded file names.
+    """
+
+    if not UPLOAD_DIR.exists():
+        return []
+
+    return sorted(
+        [
+            file.name
+            for file in UPLOAD_DIR.iterdir()
+            if file.is_file()
+        ]
+    )
