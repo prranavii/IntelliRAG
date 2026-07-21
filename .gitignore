@@ -1,24 +1,49 @@
-# Virtual Environment
+# Python virtual env and cache
+venv
 venv/
-
-# Environment Variables
-.env
-
-# Python
+__pycache__
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# VS Code
-.vscode/
+# Local environment secrets
+.env
+.env*
 
-# Chroma DB
+# Streamlit local configurations (exclude secrets.toml if created locally)
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# Vector Database and persistence paths
+chroma_db
 chroma_db/
+chroma_db*
+chroma_d
+chroma_d/
+vector_store
+vector_store/
+storage
+storage/
+persist
+persist/
 
-# Uploaded Files
+# Local data directories and generated caches
+data/uploads
 data/uploads/
-
-# Git Clones
+data/repos
 data/repos/
+data/repos_trash*
+data/github_repo/
+data/vector_store/
+data/websites/
 
-# Logs
+# Log files
 *.log
+logs/
+
+# IDE and OS config files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

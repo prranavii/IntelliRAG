@@ -15,4 +15,4 @@ print(f"Created {len(chunks)} chunks.")
 
 db = create_vector_store(chunks)
 
-print("✅ Chroma Vector Database Created Successfully!")
+print("Chroma Vector Database Created Successfully!")

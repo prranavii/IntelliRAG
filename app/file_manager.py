@@ -9,21 +9,48 @@ def save_uploaded_files(uploaded_files):
     Save uploaded PDFs.
     Clear old uploads before saving new ones.
     """
-
-    if UPLOAD_DIR.exists():
-        shutil.rmtree(UPLOAD_DIR)
-
+    # Ensure upload directory exists
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Remove existing files instead of deleting the directory
+    for item in UPLOAD_DIR.iterdir():
+        if item.is_file():
+            try:
+                item.unlink()
+            except Exception:
+                # Handle Windows file locking: ignore files that are locked/in-use
+                pass
 
     saved_paths = []
 
     for uploaded_file in uploaded_files:
-        file_path = UPLOAD_DIR / uploaded_file.name
+        base_path = UPLOAD_DIR / uploaded_file.name
+        file_path = base_path
+        
+        # Handle file locking gracefully by trying fallback indexed filenames if write is blocked
+        written = False
+        attempts = 0
+        while not written and attempts < 10:
+            if attempts > 0:
+                stem = base_path.stem
+                suffix = base_path.suffix
+                file_path = UPLOAD_DIR / f"{stem}_{attempts}{suffix}"
+            
+            try:
+                with open(file_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+                saved_paths.append(file_path)
+                written = True
+            except PermissionError:
+                attempts += 1
+            except Exception:
+                raise
 
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-
-        saved_paths.append(file_path)
+        # Final fallback: try writing directly, letting exceptions bubble up if still locked after 10 attempts
+        if not written:
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            saved_paths.append(file_path)
 
     return saved_paths
 

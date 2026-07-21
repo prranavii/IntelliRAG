@@ -7,7 +7,7 @@ engine = QueryEngine()
 while True:
 
     print("\n" + "=" * 50)
-    print("🚀 IntelliRAG Developer Console")
+    print("IntelliRAG Developer Console")
     print("=" * 50)
 
     print("1. Ingest PDFs")
