@@ -1,10 +1,9 @@
 import time
 from pathlib import Path
 
-UPLOAD_DIR = Path("data/uploads")
-CHROMA_DIR = Path("chroma_db")
-REPOS_DIR = Path("data/repos")
-WEBSITES_DIR = Path("data/websites")
+from rag.config import UPLOAD_DIR, CHROMA_DB_PATH, REPOS_DIR, WEBSITES_DIR
+
+CHROMA_DIR = CHROMA_DB_PATH
 
 
 def delete_path_recursive(path):

@@ -1,12 +1,13 @@
 import time
 from pathlib import Path
 from git import Repo
+from rag.config import REPOS_DIR
 
 
 class GitHubLoader:
 
-    def __init__(self, repo_dir="data/repos"):
-        self.repo_dir = Path(repo_dir)
+    def __init__(self, repo_dir=None):
+        self.repo_dir = Path(repo_dir) if repo_dir is not None else REPOS_DIR
         self.repo_dir.mkdir(parents=True, exist_ok=True)
 
     def _delete_path_recursive(self, path):

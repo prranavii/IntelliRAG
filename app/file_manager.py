@@ -1,7 +1,4 @@
-from pathlib import Path
-import shutil
-
-UPLOAD_DIR = Path("data/uploads")
+from rag.config import UPLOAD_DIR
 
 
 def save_uploaded_files(uploaded_files):

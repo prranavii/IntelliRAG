@@ -26,6 +26,7 @@ from rag.ingest import IngestionManager
 from rag.query_engine import QueryEngine
 from app.database import clear_knowledge_base
 from rag.github_reader import IGNORE_DIRS, SUPPORTED_EXTENSIONS
+from rag.config import REPOS_DIR, UPLOAD_DIR
 
 # ------------------------------------------------------------
 # Cache Query Engine
@@ -225,57 +226,63 @@ if not st.session_state.kb_ready:
                     else:
                         with st.spinner("Saving uploaded PDFs..."):
                             save_uploaded_files(uploaded_files)
-                        with st.spinner("Extracting & Indexing content..."):
-                            manager = IngestionManager()
-                            chunk_count = manager.ingest_pdf("data/uploads")
-                        st.session_state.messages = []
-                        st.session_state.kb_ready = True
-                        st.session_state.chunk_count = chunk_count
-                        st.session_state.document_count = len(uploaded_files)
-                        st.session_state.last_source = "PDF"
-                        st.session_state.repo_name = ""
-                        st.session_state.repo_branch = ""
-                        st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
-                        get_query_engine.clear()
-                        st.rerun()
+                        try:
+                            with st.spinner("Extracting & Indexing content..."):
+                                manager = IngestionManager()
+                                chunk_count = manager.ingest_pdf(str(UPLOAD_DIR))
+                            st.session_state.messages = []
+                            st.session_state.kb_ready = True
+                            st.session_state.chunk_count = chunk_count
+                            st.session_state.document_count = len(uploaded_files)
+                            st.session_state.last_source = "PDF"
+                            st.session_state.repo_name = ""
+                            st.session_state.repo_branch = ""
+                            st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
+                            get_query_engine.clear()
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Ingestion failed: {e}")
             elif source == "GitHub Repository":
                 github_url, build = github_component()
                 if build:
                     if not github_url.strip():
                         st.warning("⚠ Please enter a GitHub Repository URL.")
                     else:
-                        with st.spinner("Cloning Repository..."):
-                            manager = IngestionManager()
-                            chunk_count = manager.ingest_github(github_url)
-                        
-                        # Extract GitHub metadata
-                        repo_name = github_url.rstrip("/").split("/")[-1]
-                        repo_path = Path("data/repos") / repo_name
                         try:
-                            with Repo(repo_path) as repo:
-                                branch = repo.active_branch.name
-                        except Exception:
-                            branch = "main"
+                            with st.spinner("Cloning Repository..."):
+                                manager = IngestionManager()
+                                chunk_count = manager.ingest_github(github_url)
                             
-                        file_count = 0
-                        if repo_path.exists():
-                            for file in repo_path.rglob("*"):
-                                if any(part in IGNORE_DIRS for part in file.parts):
-                                    continue
-                                if file.suffix.lower() not in SUPPORTED_EXTENSIONS:
-                                    continue
-                                file_count += 1
+                            # Extract GitHub metadata
+                            repo_name = github_url.rstrip("/").split("/")[-1]
+                            repo_path = REPOS_DIR / repo_name
+                            try:
+                                with Repo(repo_path) as repo:
+                                    branch = repo.active_branch.name
+                            except Exception:
+                                branch = "main"
                                 
-                        st.session_state.messages = []
-                        st.session_state.kb_ready = True
-                        st.session_state.chunk_count = chunk_count
-                        st.session_state.document_count = file_count
-                        st.session_state.last_source = "GitHub"
-                        st.session_state.repo_name = repo_name
-                        st.session_state.repo_branch = branch
-                        st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
-                        get_query_engine.clear()
-                        st.rerun()
+                            file_count = 0
+                            if repo_path.exists():
+                                for file in repo_path.rglob("*"):
+                                    if any(part in IGNORE_DIRS for part in file.parts):
+                                        continue
+                                    if file.suffix.lower() not in SUPPORTED_EXTENSIONS:
+                                        continue
+                                    file_count += 1
+                                    
+                            st.session_state.messages = []
+                            st.session_state.kb_ready = True
+                            st.session_state.chunk_count = chunk_count
+                            st.session_state.document_count = file_count
+                            st.session_state.last_source = "GitHub"
+                            st.session_state.repo_name = repo_name
+                            st.session_state.repo_branch = branch
+                            st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
+                            get_query_engine.clear()
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Ingestion failed: {e}")
                         
     with col_right:
         st.markdown(
@@ -340,57 +347,63 @@ else:
                 else:
                     with st.spinner("Saving uploaded PDFs..."):
                         save_uploaded_files(uploaded_files)
-                    with st.spinner("Extracting & Indexing content..."):
-                        manager = IngestionManager()
-                        chunk_count = manager.ingest_pdf("data/uploads")
-                    st.session_state.messages = []
-                    st.session_state.kb_ready = True
-                    st.session_state.chunk_count = chunk_count
-                    st.session_state.document_count = len(uploaded_files)
-                    st.session_state.last_source = "PDF"
-                    st.session_state.repo_name = ""
-                    st.session_state.repo_branch = ""
-                    st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
-                    get_query_engine.clear()
-                    st.rerun()
+                    try:
+                        with st.spinner("Extracting & Indexing content..."):
+                            manager = IngestionManager()
+                            chunk_count = manager.ingest_pdf(str(UPLOAD_DIR))
+                        st.session_state.messages = []
+                        st.session_state.kb_ready = True
+                        st.session_state.chunk_count = chunk_count
+                        st.session_state.document_count = len(uploaded_files)
+                        st.session_state.last_source = "PDF"
+                        st.session_state.repo_name = ""
+                        st.session_state.repo_branch = ""
+                        st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
+                        get_query_engine.clear()
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Ingestion failed: {e}")
         elif source == "GitHub Repository":
             github_url, build = github_component()
             if build:
                 if not github_url.strip():
                     st.warning("⚠ Please enter a GitHub Repository URL.")
                 else:
-                    with st.spinner("Cloning Repository..."):
-                        manager = IngestionManager()
-                        chunk_count = manager.ingest_github(github_url)
-                    
-                    # Extract GitHub metadata
-                    repo_name = github_url.rstrip("/").split("/")[-1]
-                    repo_path = Path("data/repos") / repo_name
                     try:
-                        with Repo(repo_path) as repo:
-                            branch = repo.active_branch.name
-                    except Exception:
-                        branch = "main"
+                        with st.spinner("Cloning Repository..."):
+                            manager = IngestionManager()
+                            chunk_count = manager.ingest_github(github_url)
                         
-                    file_count = 0
-                    if repo_path.exists():
-                        for file in repo_path.rglob("*"):
-                            if any(part in IGNORE_DIRS for part in file.parts):
-                                continue
-                            if file.suffix.lower() not in SUPPORTED_EXTENSIONS:
-                                continue
-                            file_count += 1
+                        # Extract GitHub metadata
+                        repo_name = github_url.rstrip("/").split("/")[-1]
+                        repo_path = REPOS_DIR / repo_name
+                        try:
+                            with Repo(repo_path) as repo:
+                                branch = repo.active_branch.name
+                        except Exception:
+                            branch = "main"
                             
-                    st.session_state.messages = []
-                    st.session_state.kb_ready = True
-                    st.session_state.chunk_count = chunk_count
-                    st.session_state.document_count = file_count
-                    st.session_state.last_source = "GitHub"
-                    st.session_state.repo_name = repo_name
-                    st.session_state.repo_branch = branch
-                    st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
-                    get_query_engine.clear()
-                    st.rerun()
+                        file_count = 0
+                        if repo_path.exists():
+                            for file in repo_path.rglob("*"):
+                                if any(part in IGNORE_DIRS for part in file.parts):
+                                    continue
+                                if file.suffix.lower() not in SUPPORTED_EXTENSIONS:
+                                    continue
+                                file_count += 1
+                                
+                        st.session_state.messages = []
+                        st.session_state.kb_ready = True
+                        st.session_state.chunk_count = chunk_count
+                        st.session_state.document_count = file_count
+                        st.session_state.last_source = "GitHub"
+                        st.session_state.repo_name = repo_name
+                        st.session_state.repo_branch = branch
+                        st.session_state.indexed_time = time.strftime("%Y-%m-%d %H:%M:%S")
+                        get_query_engine.clear()
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Ingestion failed: {e}")
                     
     st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
     
