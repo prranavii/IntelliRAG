@@ -1,3 +1,11 @@
+# System SQLite override for Linux/Cloud environments (Chroma requires SQLite >= 3.35.0)
+try:
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
+
 import sys
 import time
 from pathlib import Path
